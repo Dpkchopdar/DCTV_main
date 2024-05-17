@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:chewie/chewie.dart';
@@ -21,17 +22,17 @@ class PlayerVideo extends StatefulWidget {
   final int? videoId, videoType, typeId, otherId, stopTime;
   final String? playType, videoUrl, vUploadType, videoThumb;
   const PlayerVideo(
-      this.playType,
-      this.videoId,
-      this.videoType,
-      this.typeId,
-      this.otherId,
-      this.videoUrl,
-      this.stopTime,
-      this.vUploadType,
-      this.videoThumb,
-      {Key? key})
-      : super(key: key);
+    this.playType,
+    this.videoId,
+    this.videoType,
+    this.typeId,
+    this.otherId,
+    this.videoUrl,
+    this.stopTime,
+    this.vUploadType,
+    this.videoThumb, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<PlayerVideo> createState() => _PlayerVideoState();
@@ -43,28 +44,30 @@ class _PlayerVideoState extends State<PlayerVideo> {
   ChewieController? _chewieController;
   late VideoPlayerController _videoPlayerController;
   SubtitleController? subtitleController;
+  DateTime? _lastPressedAt;
 
   @override
   void initState() {
     debugPrint("videoUrl ========> ${widget.videoUrl}");
     debugPrint("vUploadType ========> ${widget.vUploadType}");
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       _playerInit();
     });
     super.initState();
   }
 
   _playerInit() async {
-    debugPrint("sSubTitleUrls Length =======> ${Constant.subtitleUrls.length}");
+    debugPrint(
+        "sSubTitleUrls Length =======> ${Constant.subtitleUrls.length}");
 
     /* Subtitles & Quality */
     if (!kIsWeb) {
       _loadSubtitle();
       if (widget.playType == "Video" || widget.playType != "Show") {
         if (Constant.resolutionsUrls.isNotEmpty) {
-          await playerProvider
-              .setCurrentQuality(Constant.resolutionsUrls[0].qualityName);
+          await playerProvider.setCurrentQuality(
+              Constant.resolutionsUrls[0].qualityName);
         }
       } else {
         Constant.resolutionsUrls.clear();
@@ -218,7 +221,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
               0;
       videoDuration = (_chewieController?.videoPlayerController.value.duration)
               ?.inMilliseconds ??
-           0;
+          0;
       debugPrint("playerCPosition :===> $playerCPosition");
       debugPrint("videoDuration :=====> $videoDuration");
     });
@@ -300,7 +303,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
     // Enable Wakelock when building the widget
     Wakelock.enable();
     return WillPopScope(
-      onWillPop: onBackPressed,
+      onWillPop: doubleBackExit,
       child: Scaffold(
         backgroundColor: black,
         body: SafeArea(
@@ -510,6 +513,15 @@ class _PlayerVideoState extends State<PlayerVideo> {
     });
   }
 
+  Future<bool> doubleBackExit() {
+    if (_lastPressedAt == null ||
+        DateTime.now().difference(_lastPressedAt!) > Duration(seconds: 3)) {
+      _lastPressedAt = DateTime.now();
+      return Future.value(false);
+    }
+    return Future.value(true);
+  }
+
   Future<bool> onBackPressed() async {
     if (!(kIsWeb) || !(Constant.isTV)) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
@@ -544,7 +556,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
       }
     } else {
       if (!mounted) return Future.value(false);
-      Navigator.pop(context, false);
+      Navigator.pop(context, true);
       return Future.value(true);
     }
   }
