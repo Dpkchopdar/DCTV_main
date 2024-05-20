@@ -42,6 +42,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
   ChewieController? _chewieController;
   late VideoPlayerController _videoPlayerController;
   SubtitleController? subtitleController;
+  bool kloading = false;
 
   @override
   void initState() {
@@ -55,6 +56,9 @@ class _PlayerVideoState extends State<PlayerVideo> {
   }
 
   _playerInit() async {
+    setState(() {
+      kloading = true;
+    });
     debugPrint("sSubTitleUrls Length =======> ${Constant.subtitleUrls.length}");
 
     /* Subtitles & Quality */
@@ -215,6 +219,9 @@ class _PlayerVideoState extends State<PlayerVideo> {
           0;
       debugPrint("playerCPosition :===> $playerCPosition");
       debugPrint("videoDuration :=====> $videoDuration");
+      setState(() {
+        kloading = false;
+      });
     });
     Future.delayed(Duration.zero).then((value) {
       if (!mounted) return;
@@ -300,19 +307,22 @@ class _PlayerVideoState extends State<PlayerVideo> {
               Center(
                 child: _buildPage(),
               ),
-              if (!kIsWeb && !_chewieController!.isFullScreen)
-                Positioned(
-                  top: 15,
-                  left: 15,
-                  child: SafeArea(
-                    child: InkWell(
-                      onTap: onBackPressed,
-                      focusColor: gray.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20),
-                      child: Utils.buildBackBtnDesign(context),
-                    ),
-                  ),
-                ),
+              !kloading
+                  ? !kIsWeb && !_chewieController!.isFullScreen
+                      ? Positioned(
+                          top: 15,
+                          left: 15,
+                          child: SafeArea(
+                            child: InkWell(
+                              onTap: onBackPressed,
+                              focusColor: gray.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(20),
+                              child: Utils.buildBackBtnDesign(context),
+                            ),
+                          ),
+                        )
+                      : SizedBox()
+                  : SizedBox()
             ],
           ),
         ),
