@@ -307,21 +307,19 @@ class _PlayerVideoState extends State<PlayerVideo> {
               Center(
                 child: _buildPage(),
               ),
-              !kloading
-                  ? !kIsWeb && !_chewieController!.isFullScreen
-                      ? Positioned(
-                          top: 15,
-                          left: 15,
-                          child: SafeArea(
-                            child: InkWell(
-                              onTap: onBackPressed,
-                              focusColor: gray.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(20),
-                              child: Utils.buildBackBtnDesign(context),
-                            ),
-                          ),
-                        )
-                      : SizedBox()
+              kIsWeb && Constant.isTV
+                  ? Positioned(
+                      top: 15,
+                      left: 15,
+                      child: SafeArea(
+                        child: InkWell(
+                          onTap: onBackPressed,
+                          focusColor: gray.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Utils.buildBackBtnDesign(context),
+                        ),
+                      ),
+                    )
                   : SizedBox()
             ],
           ),
@@ -535,18 +533,27 @@ class _PlayerVideoState extends State<PlayerVideo> {
         /* Add to Continue */
         await playerProvider.addToContinue(
             "${widget.videoId}", "${widget.videoType}", "$playerCPosition");
-        if (!mounted) return Future.value(false);
-        Navigator.pop(context, true);
-        return Future.value(true);
-      } else {
-        if (!mounted) return Future.value(false);
-        Navigator.pop(context, false);
-        return Future.value(true);
+        // if (!mounted) return Future.value(false);
+        // Navigator.pop(context, true);
+        // return Future.value(true);
       }
+    }
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Press back again to exit.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return false; // Do not exit the app.
     } else {
-      if (!mounted) return Future.value(false);
-      Navigator.pop(context, false);
-      return Future.value(true);
+      return true; // Exit the app.
     }
   }
+
+  DateTime? currentBackPressTime;
+  // Future<bool> onWillPop(BuildContext context) async {}
 }
