@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dtlive/widget/myimage.dart';
 import 'package:flutter/material.dart';
 
@@ -21,38 +21,39 @@ class MyNetworkImage extends StatelessWidget {
     return SizedBox(
       height: imgHeight,
       width: imgWidth,
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        fit: fit,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: imageProvider,
-              fit: fit,
-            ),
-          ),
-        ),
-        placeholder: (context, url) {
-          return MyImage(
-            width: imgWidth,
-            height: imgHeight,
-            imagePath: imageUrl.contains('land_')
-                ? "no_image_land.png"
-                : "no_image_port.png",
-            fit: BoxFit.cover,
-          );
-        },
-        errorWidget: (context, url, error) {
-          return MyImage(
-            width: imgWidth,
-            height: imgHeight,
-            imagePath: imageUrl.contains('land_')
-                ? "no_image_land.png"
-                : "no_image_port.png",
-            fit: BoxFit.cover,
-          );
-        },
-      ),
+      child: Image.network(imageUrl),
+      // child: CachedNetworkImage(
+      //   imageUrl: imageUrl,
+      //   fit: fit,
+      //   imageBuilder: (context, imageProvider) => Container(
+      //     decoration: BoxDecoration(
+      //       image: DecorationImage(
+      //         image: imageProvider,
+      //         fit: fit,
+      //       ),
+      //     ),
+      //   ),
+      //   placeholder: (context, url) {
+      //     return MyImage(
+      //       width: imgWidth,
+      //       height: imgHeight,
+      //       imagePath: imageUrl.contains('land_')
+      //           ? "no_image_land.png"
+      //           : "no_image_port.png",
+      //       fit: BoxFit.cover,
+      //     );
+      //   },
+      //   errorWidget: (context, url, error) {
+      //     return MyImage(
+      //       width: imgWidth,
+      //       height: imgHeight,
+      //       imagePath: imageUrl.contains('land_')
+      //           ? "no_image_land.png"
+      //           : "no_image_port.png",
+      //       fit: BoxFit.cover,
+      //     );
+      //   },
+      // ),
     );
   }
 }

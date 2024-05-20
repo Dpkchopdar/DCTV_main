@@ -168,7 +168,6 @@ class _PlayerVideoState extends State<PlayerVideo> {
             ),
         ];
       },
-      
       deviceOrientationsAfterFullScreen: [
         (kIsWeb || Constant.isTV)
             ? DeviceOrientation.landscapeLeft
@@ -301,7 +300,7 @@ class _PlayerVideoState extends State<PlayerVideo> {
               Center(
                 child: _buildPage(),
               ),
-              if (!kIsWeb)
+              if (!kIsWeb && !_chewieController!.isFullScreen)
                 Positioned(
                   top: 15,
                   left: 15,

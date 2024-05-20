@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:dtlive/provider/playerprovider.dart';
 import 'package:dtlive/utils/color.dart';
 import 'package:dtlive/utils/constant.dart';

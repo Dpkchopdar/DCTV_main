@@ -308,7 +308,7 @@ class CustomDialog extends StatelessWidget {
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              primary: colorPrimary, // Accent color
+                              backgroundColor: colorPrimary, // Accent color
                               fixedSize: Size(250, 50),
                             ),
                           ),
